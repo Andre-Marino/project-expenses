@@ -61,10 +61,16 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
+    final sizeKeyBoard = MediaQuery.of(context).viewInsets.bottom;
     return Card(
       elevation: 5,
       child: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: EdgeInsets.only(
+          top: 50,
+          right: 10,
+          left: 10,
+          bottom: sizeKeyBoard,
+        ),
         child: Column(
           children: [
             TextField(
@@ -94,7 +100,7 @@ class _TransactionFormState extends State<TransactionForm> {
               cursorColor: Colors.black,
             ),
             SizedBox(height: 10),
-//---------------------------------------------------------- data ------------------
+            //---------------------------------------------------------- data ------------------
             Row(
               children: [
                 Expanded(
@@ -123,8 +129,20 @@ class _TransactionFormState extends State<TransactionForm> {
             ),
             SizedBox(height: 10),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                ElevatedButton(
+                  child: Text(
+                    'cancelar',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    foregroundColor: MaterialStateProperty.all(Colors.red),
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
                 ElevatedButton(
                   child: Text(
                     'Nova Transação',

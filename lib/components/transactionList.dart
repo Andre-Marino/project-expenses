@@ -10,77 +10,96 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 400,
-      child: transaction.isEmpty
-          ? Column(
-              children: [
-                SizedBox(height: 25),
-                Text(
-                  'Nenhuma Transação Cadastrada',
-                  style: Theme.of(context).textTheme.titleLarge,
+    bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    return transaction.isEmpty
+        ? LayoutBuilder(
+            builder: (ctx, constrains) {
+              return Column(
+                children: [
+                  SizedBox(height: 20),
+                  Text(
+                    'Nenhuma Transação Cadastrada',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  SizedBox(height: 20),
+                  Container(
+                    height: isLandscape
+                        ? constrains.maxHeight * 0.6
+                        : constrains.maxHeight * 0.4,
+                    child: Image.asset(
+                      'assets/images/waiting.png',
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                ],
+              );
+            },
+          )
+        : ListView.builder(
+            itemCount: transaction.length,
+            itemBuilder: (ctx, index) {
+              final tr = transaction[index];
+              return Card(
+                elevation: 5,
+                margin: EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 5,
                 ),
-                SizedBox(height: 25),
-                Container(
-                  height: 200,
-                  child: Image.asset(
-                    'assets/images/waiting.png',
-                    fit: BoxFit.cover,
-                  ),
-                )
-              ],
-            )
-          : ListView.builder(
-              itemCount: transaction.length,
-              itemBuilder: (ctx, index) {
-                final tr = transaction[index];
-                return Card(
-                  elevation: 5,
-                  margin: EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 5,
-                  ),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: Theme.of(context).colorScheme.secondary,
-                      radius: 30,
-                      child: Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: FittedBox(
-                          child: Text(
-                            'R\$${tr.value}',
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    radius: 30,
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: FittedBox(
+                        child: Text(
+                          'R\$${tr.value}',
+                          style: TextStyle(
+                            color: Colors.black,
                           ),
                         ),
                       ),
                     ),
-                    title: Text(
-                      tr.title,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    subtitle: Text(
-                      DateFormat('d MMM y').format(tr.date),
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    trailing: IconButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) =>
-                                CustumDialog(tr.title, tr.id, onRemove));
-                      },
-                      icon: Icon(Icons.delete),
-                      color: Theme.of(context).colorScheme.error,
+                  ),
+                  title: Text(
+                    tr.title,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  subtitle: Text(
+                    DateFormat('d MMM y').format(tr.date),
+                    style: TextStyle(
+                      color: Colors.grey,
                     ),
                   ),
-                );
-              },
-            ),
-    );
+                  trailing: MediaQuery.of(context).size.width > 480
+                      ? TextButton.icon(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) =>
+                                    CustumDialog(tr.title, tr.id, onRemove));
+                          },
+                          label: Text('Excluir'),
+                          style: ButtonStyle(
+                              foregroundColor: MaterialStateProperty.all(
+                                  Theme.of(context).colorScheme.error)),
+                        )
+                      : IconButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) =>
+                                    CustumDialog(tr.title, tr.id, onRemove));
+                          },
+                          icon: Icon(Icons.delete),
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                ),
+              );
+            },
+          );
   }
 }
 
